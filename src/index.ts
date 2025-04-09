@@ -1,5 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { CoursesTool } from "./tools/CourseTool.js";
 
 const server = new McpServer({
   name: "interviewready",
@@ -10,10 +11,12 @@ const server = new McpServer({
   },
 });
 
+new CoursesTool(server)
+
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.log("InterviewReady MCP Server running on stdio");
+  console.error("InterviewReady MCP Server running on stdio");
 }
 
 main().catch((error) => {
