@@ -1,6 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { BlogPosts } from "../api/blogs.js";
+import { ReducedItemData } from "../types/api/blogs.js";
 
 export class BlogTool {
     constructor(private readonly server: McpServer) {
@@ -41,6 +42,15 @@ export class BlogTool {
                 title: z.string().describe("The title of the blog post to get"),
             },
             async ({ title }) => this.getBlogPostByTitle(title),
+        );
+
+        this.server.tool(
+            "blog-content",
+            "Get content of a blog post by title",
+            {
+                title: z.string().describe("The title of the blog post to get"),
+            },
+            async ({ title }) => this.getBlogContent(title),
         );
     }
 
@@ -118,4 +128,22 @@ export class BlogTool {
             ]
         };
     }
+
+    async getBlogContent(title: string) {
+        const blogPost = await BlogPosts.getBlogPostByTitle(title);
+        if (!blogPost) {
+            return {
+                content: [
+                    { type: "text" as const, text: "No blog post found" }
+                ]
+            };
+        }
+
+        return {
+            content: [
+                { type: "text" as const, text: blogPost.bodyPlainText }
+            ]
+        };
+    }
+
 }
