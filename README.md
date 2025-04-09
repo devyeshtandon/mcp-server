@@ -34,3 +34,22 @@ The repo is open for change!
         }
 } 
 ```
+
+
+## Setup with Cursor
+
+1. Go to Cursor > Settings > Cursor Settings
+2. Go to the `MCP` tab
+3. Add the following to the config file:
+
+```json
+{
+    "interviewready-mcp-server": {
+            "command": "node",
+            "args": [
+                "{path-to-repo}/mcp-server/build/index.js"
+            ]
+        }
+} 
+```
+4. Use in agent mode. For some reason, MCP is not working in Ask mode.
