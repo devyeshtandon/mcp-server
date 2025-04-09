@@ -28,5 +28,11 @@ export class BlogPosts {
         const blogPosts = await this.getAllBlogPosts();
         return blogPosts.find((post) => post.slug === slug);
     }
+
+    static async getBlogPostByKeywords(keyword: string) {
+        const blogPosts = await this.getAllBlogPosts();
+        return blogPosts.filter((post) => post.keywords?.includes(keyword));
+    }
+
 }
 
