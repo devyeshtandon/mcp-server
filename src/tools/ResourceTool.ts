@@ -10,7 +10,7 @@ export class ResourceTool {
     private registerTool() {
         this.server.tool(
             "get-resources",
-            "Get all resources on interviewready platform",
+            "Get all external resources recommended by interviewready platform",
             {},
             async () => this.getResources(),
         );
