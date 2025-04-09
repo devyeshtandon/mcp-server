@@ -1,9 +1,8 @@
+import { InterviewReadyUrls } from "../config/urls.js";
 import { Resource } from "../types/api/resource.js";
 
-const RESOURCE_API = "https://api.interviewready.io/api/utilities/resources/all"
-
 export async function getResources(): Promise<Resource[]> {
-    const response = await fetch(RESOURCE_API);
+    const response = await fetch(InterviewReadyUrls.RESOURCE_API_URL);
     if (!response.ok) {
         throw new Error("Failed to fetch resources");
     }

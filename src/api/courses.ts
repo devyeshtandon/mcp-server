@@ -1,8 +1,8 @@
+import { InterviewReadyUrls } from "../config/urls.js"
 import { CourseResponse, CoursesWithStatsResponse } from "../types/api/courses.js"
 
 export async function getCourses(): Promise<CourseResponse[]> {
-    const API = "https://api.interviewready.io/api/v1/courses"
-
+    const API = InterviewReadyUrls.COURSES_API_URL
     const response = await fetch(API)
     if (!response.ok) {
         throw new Error("Failed to fetch courses")
@@ -14,7 +14,7 @@ export async function getCourses(): Promise<CourseResponse[]> {
 }
 
 export async function getCourseById(courseId: number): Promise<CourseResponse> {
-    const response = await fetch(`https://api.interviewready.io/api/v1/courses/${courseId}`);
+    const response = await fetch(`${InterviewReadyUrls.COURSES_API_URL}/${courseId}`);
     if (!response.ok) {
         throw new Error(`Failed to fetch course with id: ${courseId}`);
     }
