@@ -2,6 +2,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { BlogPosts } from "../api/blogs.js";
 import { ReducedItemData } from "../types/api/blogs.js";
+import { withError } from "../middleware/withError.js";
 
 export class BlogTool {
     constructor(private readonly server: McpServer) {
@@ -14,7 +15,7 @@ export class BlogTool {
             "get-blog-posts",
             "Get all blog posts on interviewready platform",
             {},
-            async () => this.getBlogPosts(),
+            withError(async () => this.getBlogPosts()),
         );
 
         this.server.tool(
@@ -23,7 +24,7 @@ export class BlogTool {
             {
                 slug: z.string().describe("The slug of the blog post to get"),
             },
-            async ({ slug }) => this.getBlogPostBySlug(slug),
+            withError(async ({ slug }) => this.getBlogPostBySlug(slug)),
         );
 
         this.server.tool(
@@ -32,7 +33,7 @@ export class BlogTool {
             {
                 keywords: z.array(z.string()).describe("The keywords of the blog post to get"),
             },
-            async ({ keywords }) => this.getBlogPostByKeywords(keywords),
+            withError(async ({ keywords }) => this.getBlogPostByKeywords(keywords)),
         );
 
         this.server.tool(
@@ -41,7 +42,7 @@ export class BlogTool {
             {
                 title: z.string().describe("The title of the blog post to get"),
             },
-            async ({ title }) => this.getBlogPostByTitle(title),
+            withError(async ({ title }) => this.getBlogPostByTitle(title)),
         );
 
         this.server.tool(
@@ -50,7 +51,7 @@ export class BlogTool {
             {
                 title: z.string().describe("The title of the blog post to get"),
             },
-            async ({ title }) => this.getBlogContent(title),
+            withError(async ({ title }) => this.getBlogContent(title)),
         );
     }
 

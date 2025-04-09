@@ -1,7 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { getCourseById, getCourses } from "../api/courses.js";
 import { z } from "zod";
-
+import { withError } from "../middleware/withError.js";
 export class CoursesTool {
     constructor(private readonly server: McpServer) {
         this.server = server;
@@ -13,7 +13,7 @@ export class CoursesTool {
             "get-courses",
             "Get all courses on interviewready platform",
             {},
-            async () => this.getCourses(),
+            withError(async () => this.getCourses()),
         );
 
         this.server.tool(
@@ -22,7 +22,7 @@ export class CoursesTool {
             {
                 courseId: z.number().describe("The id of the course to get"),
             },
-            async ({ courseId }) => this.getCourseById(courseId),
+            withError(async ({ courseId }) => this.getCourseById(courseId)),
         );
     }
 

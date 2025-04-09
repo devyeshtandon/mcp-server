@@ -1,6 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { getResources } from "../api/resource.js";
-
+import { withError } from "../middleware/withError.js";
 export class ResourceTool {
     constructor(private readonly server: McpServer) {
         this.server = server;
@@ -12,7 +12,7 @@ export class ResourceTool {
             "get-resources",
             "Get all external resources recommended by interviewready platform",
             {},
-            async () => this.getResources(),
+            withError(async () => this.getResources()),
         );
     }
 
