@@ -24,5 +24,9 @@ export class BlogPosts {
         return reducedBlogData;
     }
 
+    static async getBlogPostBySlug(slug: string) {
+        const blogPosts = await this.getAllBlogPosts();
+        return blogPosts.find((post) => post.slug === slug);
+    }
 }
 
