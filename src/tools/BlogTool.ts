@@ -9,5 +9,29 @@ export class BlogTool {
     }
 
     private registerTool() {
+        this.server.tool(
+            "get-blog-posts",
+            "Get all blog posts on interviewready platform",
+            {},
+            async () => this.getBlogPosts(),
+        );
+
+    async getBlogPosts() {
+        const blogPosts = await BlogPosts.getAllBlogPosts();
+        const content = blogPosts.map((blogPost) => (
+            {
+                type: "text" as const,
+                text: JSON.stringify({
+                    slug: blogPost.slug,
+                    title: blogPost.title,
+                    keywords: blogPost.keywords,
+                    bodyPlainText: blogPost.bodyPlainText,
+                })
+            }
+        ))
+
+        return { content: content };
+    }
+
     }
 }
