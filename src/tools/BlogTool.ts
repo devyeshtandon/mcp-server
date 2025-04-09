@@ -44,17 +44,20 @@ export class BlogTool {
         );
     }
 
+    private getBlogPostWithoutBody(blogPost: ReducedItemData) {
+        return {
+            slug: blogPost.slug,
+            title: blogPost.title,
+            keywords: blogPost.keywords
+        };
+    }
+
     async getBlogPosts() {
         const blogPosts = await BlogPosts.getAllBlogPosts();
         const content = blogPosts.map((blogPost) => (
             {
                 type: "text" as const,
-                text: JSON.stringify({
-                    slug: blogPost.slug,
-                    title: blogPost.title,
-                    keywords: blogPost.keywords,
-                    bodyPlainText: blogPost.bodyPlainText,
-                })
+                text: JSON.stringify(this.getBlogPostWithoutBody(blogPost))
             }
         ))
 
@@ -84,8 +87,9 @@ export class BlogTool {
     async getBlogPostByKeywords(keywords: string[]) {
         const keywordPromises = keywords.map(keyword => BlogPosts.getBlogPostByKeywords(keyword));
         const blogPostsArrays = await Promise.all(keywordPromises);
+        const allBlogPosts = blogPostsArrays.flat();
 
-        if (blogPostsArrays.length == 0) {
+        if (allBlogPosts.length == 0) {
             return {
                 content: [
                     { type: "text" as const, text: "No blog post found" }
@@ -93,7 +97,8 @@ export class BlogTool {
             };
         }
 
-        const content = blogPostsArrays.map(blogPosts => ({ type: "text" as const, text: JSON.stringify(blogPosts) }))
+        const content = allBlogPosts.map(blogPost => (
+            { type: "text" as const, text: JSON.stringify(this.getBlogPostWithoutBody(blogPost)) }))
         return { content: content };
     }
 
