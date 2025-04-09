@@ -34,5 +34,9 @@ export class BlogPosts {
         return blogPosts.filter((post) => post.keywords?.includes(keyword));
     }
 
+    static async getBlogPostByTitle(title: string) {
+        const blogPosts = await this.getAllBlogPosts();
+        return blogPosts.find((post) => post.title === title);
+    }
 }
 
