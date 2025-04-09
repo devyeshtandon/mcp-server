@@ -16,6 +16,14 @@ export class CoursesTool {
             async () => this.getCourses(),
         );
 
+        this.server.tool(
+            "get-course-by-id",
+            "Get a course by id",
+            {
+                courseId: z.number().describe("The id of the course to get"),
+            },
+            async ({ courseId }) => this.getCourseById(courseId),
+        );
     }
 
     async getCourses() {
@@ -37,4 +45,16 @@ export class CoursesTool {
         };
     }
 
+    async getCourseById(courseId: number) {
+        const course = await getCourseById(courseId);
+
+        return {
+            content: [
+                {
+                    type: "text" as const,
+                    text: JSON.stringify(course),
+                },
+            ],
+        };
+    }
 }
