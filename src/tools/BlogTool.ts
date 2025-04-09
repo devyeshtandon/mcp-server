@@ -58,7 +58,8 @@ export class BlogTool {
         return {
             slug: blogPost.slug,
             title: blogPost.title,
-            keywords: blogPost.keywords
+            keywords: blogPost.keywords,
+            url: blogPost.url
         };
     }
 
