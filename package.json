@@ -19,6 +19,7 @@
   "packageManager": "pnpm@10.6.2",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.9.0",
+    "dotenv": "^16.4.7",
     "zod": "^3.24.2"
   },
   "devDependencies": {
