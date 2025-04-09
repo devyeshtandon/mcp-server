@@ -1,5 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { CoursesTool } from "./tools/CourseTool.js";
 
 const server = new McpServer({
   name: "interviewready",
@@ -9,6 +10,8 @@ const server = new McpServer({
     tools: {},
   },
 });
+
+new CoursesTool(server)
 
 async function main() {
   const transport = new StdioServerTransport();
