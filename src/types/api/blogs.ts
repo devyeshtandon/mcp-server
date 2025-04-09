@@ -35,6 +35,7 @@ export interface ItemData {
     toc: TocEntry[];
     body: Body;
     meta?: Record<string, any>;
+    path: string;
 }
 
 export interface ReducedItemData {
@@ -42,6 +43,7 @@ export interface ReducedItemData {
     title: string;
     keywords?: string;
     bodyPlainText: string;
+    url: string;
 }
 
 interface Collection {

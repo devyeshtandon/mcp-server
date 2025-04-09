@@ -1,6 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { BlogPosts } from "../api/blogs.js";
+import { ReducedItemData } from "../types/api/blogs.js";
 
 export class BlogTool {
     constructor(private readonly server: McpServer) {
@@ -42,6 +43,24 @@ export class BlogTool {
             },
             async ({ title }) => this.getBlogPostByTitle(title),
         );
+
+        this.server.tool(
+            "blog-content",
+            "Get content of a blog post by title",
+            {
+                title: z.string().describe("The title of the blog post to get"),
+            },
+            async ({ title }) => this.getBlogContent(title),
+        );
+    }
+
+    private getBlogPostWithoutBody(blogPost: ReducedItemData) {
+        return {
+            slug: blogPost.slug,
+            title: blogPost.title,
+            keywords: blogPost.keywords,
+            url: blogPost.url
+        };
     }
 
     async getBlogPosts() {
@@ -49,12 +68,7 @@ export class BlogTool {
         const content = blogPosts.map((blogPost) => (
             {
                 type: "text" as const,
-                text: JSON.stringify({
-                    slug: blogPost.slug,
-                    title: blogPost.title,
-                    keywords: blogPost.keywords,
-                    bodyPlainText: blogPost.bodyPlainText,
-                })
+                text: JSON.stringify(this.getBlogPostWithoutBody(blogPost))
             }
         ))
 
@@ -84,8 +98,9 @@ export class BlogTool {
     async getBlogPostByKeywords(keywords: string[]) {
         const keywordPromises = keywords.map(keyword => BlogPosts.getBlogPostByKeywords(keyword));
         const blogPostsArrays = await Promise.all(keywordPromises);
+        const allBlogPosts = blogPostsArrays.flat();
 
-        if (blogPostsArrays.length == 0) {
+        if (allBlogPosts.length == 0) {
             return {
                 content: [
                     { type: "text" as const, text: "No blog post found" }
@@ -93,7 +108,8 @@ export class BlogTool {
             };
         }
 
-        const content = blogPostsArrays.map(blogPosts => ({ type: "text" as const, text: JSON.stringify(blogPosts) }))
+        const content = allBlogPosts.map(blogPost => (
+            { type: "text" as const, text: JSON.stringify(this.getBlogPostWithoutBody(blogPost)) }))
         return { content: content };
     }
 
@@ -113,4 +129,22 @@ export class BlogTool {
             ]
         };
     }
+
+    async getBlogContent(title: string) {
+        const blogPost = await BlogPosts.getBlogPostByTitle(title);
+        if (!blogPost) {
+            return {
+                content: [
+                    { type: "text" as const, text: "No blog post found" }
+                ]
+            };
+        }
+
+        return {
+            content: [
+                { type: "text" as const, text: blogPost.bodyPlainText }
+            ]
+        };
+    }
+
 }
