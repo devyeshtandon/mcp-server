@@ -16,6 +16,15 @@ export class BlogTool {
             async () => this.getBlogPosts(),
         );
 
+        this.server.tool(
+            "get-blog-post-by-slug",
+            "Get a blog post by slug",
+            {
+                slug: z.string().describe("The slug of the blog post to get"),
+            },
+            async ({ slug }) => this.getBlogPostBySlug(slug),
+        );
+
     async getBlogPosts() {
         const blogPosts = await BlogPosts.getAllBlogPosts();
         const content = blogPosts.map((blogPost) => (
@@ -31,6 +40,26 @@ export class BlogTool {
         ))
 
         return { content: content };
+    }
+
+    async getBlogPostBySlug(slug: string) {
+        const blogPost = await BlogPosts.getBlogPostBySlug(slug);
+        if (!blogPost) {
+            return {
+                content: [
+                    { type: "text" as const, text: "No blog post found" }
+                ]
+            };
+        }
+
+        return {
+            content: [
+                {
+                    type: "text" as const,
+                    text: JSON.stringify(blogPost),
+                }
+            ]
+        };
     }
 
     }
