@@ -25,6 +25,15 @@ export class BlogTool {
             async ({ slug }) => this.getBlogPostBySlug(slug),
         );
 
+        this.server.tool(
+            "get-blog-post-by-keywords",
+            "Get a blog post by keywords",
+            {
+                keywords: z.array(z.string()).describe("The keywords of the blog post to get"),
+            },
+            async ({ keywords }) => this.getBlogPostByKeywords(keywords),
+        );
+
     async getBlogPosts() {
         const blogPosts = await BlogPosts.getAllBlogPosts();
         const content = blogPosts.map((blogPost) => (
@@ -60,6 +69,22 @@ export class BlogTool {
                 }
             ]
         };
+    }
+
+    async getBlogPostByKeywords(keywords: string[]) {
+        const keywordPromises = keywords.map(keyword => BlogPosts.getBlogPostByKeywords(keyword));
+        const blogPostsArrays = await Promise.all(keywordPromises);
+
+        if (blogPostsArrays.length == 0) {
+            return {
+                content: [
+                    { type: "text" as const, text: "No blog post found" }
+                ]
+            };
+        }
+
+        const content = blogPostsArrays.map(blogPosts => ({ type: "text" as const, text: JSON.stringify(blogPosts) }))
+        return { content: content };
     }
 
     }
