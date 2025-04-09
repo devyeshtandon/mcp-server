@@ -1,7 +1,8 @@
 import { BlogResponse, ReducedItemData } from "../types/api/blogs.js";
 
 export class BlogPosts {
-    private static readonly baseUrl: string = "https://interviewready.io/_nuxt/content/db-96806b65.json";
+    private static readonly baseUrl: string = "https://interviewready.io";
+    private static readonly apiUrl: string = `${this.baseUrl}/_nuxt/content/db-96806b65.json`;
     private static cachedResponse: ReducedItemData[] | null = null;
 
 
@@ -10,7 +11,7 @@ export class BlogPosts {
             return this.cachedResponse;
         }
 
-        const response = await fetch(this.baseUrl);
+        const response = await fetch(this.apiUrl);
         const data: BlogResponse = await response.json();
         const blogData = data._collections[0]._data;
         const reducedBlogData: ReducedItemData[] = blogData.map((post) => ({
@@ -18,6 +19,7 @@ export class BlogPosts {
             title: post.title,
             keywords: post.keywords || post.Keywords,
             bodyPlainText: post.bodyPlainText,
+            url: `${this.baseUrl}${post.path}`
         }));
 
         this.cachedResponse = reducedBlogData;
