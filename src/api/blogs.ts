@@ -10,6 +10,10 @@ export class BlogPosts {
         }
 
         const response = await fetch(InterviewReadyUrls.BLOG_API_URL);
+        if (!response.ok) {
+            throw new Error("Failed to fetch blog posts");
+        }
+
         const data: BlogResponse = await response.json();
         const blogData = data._collections[0]._data;
         const reducedBlogData: ReducedItemData[] = blogData.map((post) => ({
